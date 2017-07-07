@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>音乐榜</title>
+        <script src="angularjs/angular.min.js"></script>
+        <script src="angularjs/angular-route.js"></script>
+    </head>
+    <body ng-app="app">
+	<p>
+		<a href="#1">流行</a>
+		<a href="#2">华语</a>
+		<a href="#3">欧美</a>
+		<a href="#4">日韩</a>
+	</p>
+	<div ng-view></div>
+
+    </body>
+    <script>
+    // 创建 app应用，同时依赖注入ngRoute路由
+    var app = angular.module("app",["ngRoute"]);
+    // 创建控制器，$http用于发送请求
+    app.controller("myCtrl",["$scope","$http","$routeParams",function($scope,$http,$routeParams){
+    	// 获取请求参数
+    	var id = $routeParams.id;
+    	console.log(id);
+    	$http({
+    		url:"list.php",
+    		method:"get",
+    		params:{number:id}  //传递id
+    	}).success(function(result){
+    		// 绑定数据
+    		$scope.music = result;
+    	})
+    }])
+    // 设置路由
+    app.config(["$routeProvider",function($routeProvider){
+    	// 设置路由参数；
+    	$routeProvider.when("/",{
+    		template:"ss"
+    	}).when("/:id",{
+    		// 设置视图
+    		templateUrl:"music-show.html",
+    		controller:"myCtrl"
+    	}).otherwise({
+    		redirectTo:"/"
+    	})
+    }])
+
+    </script>
+</html>
